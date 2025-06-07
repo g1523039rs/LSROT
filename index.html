@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CZカウンター</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      background-image: url('images/background.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      font-family: sans-serif;
+      text-align: center;
+      padding: 20px;
+      color: #fff;
+      margin: 0;
+    }
+
+    .container {
+      background-color: rgba(255, 255, 255, 0.8);
+      padding: 20px;
+      border-radius: 12px;
+      max-width: 500px;
+      margin: auto;
+    }
+
+    .stage-select button {
+      margin: 5px;
+      padding: 10px;
+    }
+
+    .stage-select .active {
+      background-color: #000;
+      color: #fff;
+    }
+
+    .button-row {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 20px;
+    }
+
+    .input-block {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .icon {
+      width: 100px;
+      margin-bottom: 5px;
+    }
+
+    progress {
+      width: 100%;
+      height: 20px;
+      margin-bottom: 10px;
+    }
+
+    .reset-btn {
+      margin-top: 5px;
+    }
+
+    .section-title {
+      margin-top: 30px;
+      font-weight: bold;
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>CZカウンター</h1>
+
+    <div class="stage-select">
+      <p>ステージ選択：</p>
+      <button onclick="changeStage('normal')" id="btn-normal" class="active">通常</button>
+      <button onclick="changeStage('evening')" id="btn-evening">夕方</button>
+      <button onclick="changeStage('night')" id="btn-night">夜</button>
+    </div>
+
+    <div class="button-row">
+      <div class="input-block">
+        <img src="images/peach.png" class="icon">
+        <button onclick="addPoints('peach')">左チャンス目＋</button>
+        <label><input type="checkbox" id="peach-boost"> ドキドキ高確</label>
+        <button class="reset-btn" onclick="resetPoints('peach')">リセット</button>
+      </div>
+
+      <div class="input-block">
+        <img src="images/green.png" class="icon">
+        <button onclick="addPoints('green')">中チャンス目</button>
+        <label><input type="checkbox" id="green-boost"> ドキドキ高確</label>
+        <button class="reset-btn" onclick="resetPoints('green')">リセット</button>
+      </div>
+
+      <div class="input-block">
+        <img src="images/purple.png" class="icon">
+        <button onclick="addPoints('purple')">右チャンス目</button>
+        <label><input type="checkbox" id="purple-boost"> ドキドキ高確</label>
+        <button class="reset-btn" onclick="resetPoints('purple')">リセット</button>
+      </div>
+    </div>
+
+    <div class="progress-row">
+      <p>桃: <span id="peach-count">0</span>/150</p>
+      <progress id="peach-bar" max="150" value="0"></progress>
+      <p>緑: <span id="green-count">0</span>/150</p>
+      <progress id="green-bar" max="150" value="0"></progress>
+      <p>紫: <span id="purple-count">0</span>/150</p>
+      <progress id="purple-bar" max="150" value="0"></progress>
+    </div>
+
+    <div class="section-title">▼穢れポイント</div>
+    <div>
+      <p>穢れ: <span id="impurity-count">0</span></p>
+      <button onclick="addImpurity()">穢れ＋1</button>
+      <button onclick="resetImpurity()">リセット</button>
+    </div>
+  </div>
+
+  <script>
+    let stage = 'normal';
+
+    const stageMultipliers = {
+      normal: 1,
+      evening: 10,
+      night: 75
+    };
+
+    const counters = {
+      peach: 0,
+      green: 0,
+      purple: 0
+    };
+
+    let impurity = 0;
+
+    function changeStage(newStage) {
+      stage = newStage;
+      document.querySelectorAll('.stage-select button').forEach(btn => btn.classList.remove('active'));
+      document.getElementById(`btn-${newStage}`).classList.add('active');
+    }
+
+    function addPoints(type) {
+      const boost = document.getElementById(`${type}-boost`).checked ? 10 : 0;
+      const addValue = stageMultipliers[stage] + boost;
+      counters[type] = Math.min(150, counters[type] + addValue);
+      document.getElementById(`${type}-count`).innerText = counters[type];
+      document.getElementById(`${type}-bar`).value = counters[type];
+    }
+
+    function resetPoints(type) {
+      counters[type] = 0;
+      document.getElementById(`${type}-count`).innerText = 0;
+      document.getElementById(`${type}-bar`).value = 0;
+    }
+
+    function addImpurity() {
+      impurity++;
+      document.getElementById('impurity-count').innerText = impurity;
+    }
+
+    function resetImpurity() {
+      impurity = 0;
+      document.getElementById('impurity-count').innerText = impurity;
+    }
+  </script>
+</body>
+</html>
